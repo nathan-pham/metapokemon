@@ -1,5 +1,5 @@
 export const Wrapper = ({ children }) => (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-3xl mx-auto">
         { children }
     </div>
 )

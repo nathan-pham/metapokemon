@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
 
 import { Wrapper, Header, Footer } from "@/components/Elements"
+import { SelectCharacter } from "@/components/Game"
+
 import dragoniteSrc from "@/assets/dragonite.gif"
 
 const App = () => {
 
     const [ account, setAccount ] = useState(null)
+    const [ characterNFT, setCharacterNFT ] = useState(null)
 
     const hasWallet = async () => {
         if(window.ethereum) {
@@ -49,8 +52,8 @@ const App = () => {
         hasWallet(setAccount)
     }, [])
 
-    return (
-        <>
+    if(!account) {
+        return (
             <Wrapper>
                 <Header />
 
@@ -62,8 +65,16 @@ const App = () => {
 
                 <Footer />
             </Wrapper>
-        </>
-    )
+        )
+    } else if(account && !characterNFT) {
+        return (
+            <Wrapper>
+                <Header />
+                <SelectCharacter setCharacterNFT={ setCharacterNFT }/>
+                <Footer />
+            </Wrapper>
+        )
+    }
 }
 
 export default App

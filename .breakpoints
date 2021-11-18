@@ -3,9 +3,9 @@
     "index.html": [
       {
         "id": "c2d430d4-5c27-402e-a3c0-ebe131774c7f",
-        "line": 8,
-        "version": 11,
-        "index": 257
+        "line": 10,
+        "version": 70,
+        "index": 277
       }
     ],
     "src/components/Wrapper.jsx": [
