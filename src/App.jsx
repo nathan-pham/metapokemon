@@ -5,6 +5,10 @@ import { SelectCharacter } from "@/components/Game"
 
 import dragoniteSrc from "@/assets/dragonite.gif"
 
+import MyEpicGame from "@/solidity/MyEpicGame.json"
+import { CONTRACT_ADDRESS } from "@/solidity/constants"
+
+
 const App = () => {
 
     const [ account, setAccount ] = useState(null)
