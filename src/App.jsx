@@ -7,6 +7,7 @@ import dragoniteSrc from "@/assets/dragonite.gif"
 
 import MyEpicGame from "@/solidity/MyEpicGame.json"
 import { CONTRACT_ADDRESS } from "@/solidity/constants"
+import { ethers } from "ethers"
 
 
 const App = () => {
@@ -30,8 +31,12 @@ const App = () => {
 
                 console.log("Found an authorized account: ", account)
                 setAccount(account)
-            } else { console.log("No authorized account found") }
-        } catch(e) { console.log(e) }
+            } else { 
+                console.log("No authorized account found") 
+            }
+        } catch(e) { 
+            console.log(e) 
+        }
     }
 
     const connectWallet = async () => {
@@ -47,14 +52,50 @@ const App = () => {
                 console.log("Connected", account)
                 setAccount(account)
 
-            } catch(e) { console.log(e) }
-        } else { alert("Install Metamask!") }
+            } catch(e) { 
+                console.log(e) 
+            }
+        } else { 
+            alert("Install Metamask!") 
+        }
     }
 
+    const fetchNFTMetadata = async () => {
+        console.log("Checking for character NFT on address:", account)
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        const gameContract = new ethers.Contract(
+            CONTRACT_ADDRESS,
+            MyEpicGame.abi,
+            signer
+        )
+
+        const txn = await gameContract.userHasNFT()
+        if (txn.name) {
+            console.log("User has character NFT")
+
+            setCharacterNFT({
+                name: txn.name,
+                imageURI: txn.imageURI,
+                hp: txn.hp.toNumber(),
+                maxHp: txn.maxHp.toNumber(),
+                attackDamage: txn.attackDamage.toNumber()
+            })
+        } else {
+            console.log("No character NFT found!")
+        }
+    }
 
     useEffect(() => {
         hasWallet(setAccount)
     }, [])
+
+    useEffect(() => {
+        if(account) {
+            fetchNFTMetadata()
+        }
+    }, [ account ])
 
     if(!account) {
         return (
