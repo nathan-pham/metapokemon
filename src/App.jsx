@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 
 import { Wrapper, Header, Footer } from "@/components/Elements"
 import { SelectCharacter } from "@/components/Game"
@@ -6,9 +6,9 @@ import { SelectCharacter } from "@/components/Game"
 import dragoniteSrc from "@/assets/dragonite.gif"
 
 import MyEpicGame from "@/solidity/MyEpicGame.json"
-import { CONTRACT_ADDRESS } from "@/solidity/constants"
-import { ethers } from "ethers"
 
+import { CONTRACT_ADDRESS, transformCharacterAttributes } from "@/solidity/constants"
+import { ethers } from "ethers"
 
 const App = () => {
 
@@ -74,14 +74,7 @@ const App = () => {
         const txn = await gameContract.userHasNFT()
         if (txn.name) {
             console.log("User has character NFT")
-
-            setCharacterNFT({
-                name: txn.name,
-                imageURI: txn.imageURI,
-                hp: txn.hp.toNumber(),
-                maxHp: txn.maxHp.toNumber(),
-                attackDamage: txn.attackDamage.toNumber()
-            })
+            setCharacterNFT(transformCharacterAttributes(txn))
         } else {
             console.log("No character NFT found!")
         }
@@ -102,10 +95,10 @@ const App = () => {
             <Wrapper>
                 <Header />
 
-                <img className="max-w-full rounded-xl mt-4" src={ dragoniteSrc } />
+                <img className="max-w-full rounded-xl mt-6" src={ dragoniteSrc } />
 
                 <div className="text-center">
-                    <button onClick={ connectWallet } className="px-3 py-2 rounded-lg mt-4 bg-blue-500 text-white">Connect with Metamask</button>
+                    <button onClick={ connectWallet } className="px-3 py-2 rounded-lg mt-6 bg-blue-500 text-white">Connect with Metamask</button>
                 </div>
 
                 <Footer />
