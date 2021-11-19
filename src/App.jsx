@@ -95,7 +95,7 @@ const App = () => {
         } else if(account && !characterNFT) {
             return <SelectCharacter setCharacterNFT={ setCharacterNFT }/>
         } else {
-            return <Arena characterNFT={ characterNFT }/>
+            return <Arena characterNFT={ characterNFT } setCharacterNFT={ setCharacterNFT } />
         }
     }
     
