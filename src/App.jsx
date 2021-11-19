@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
 
-import { Wrapper, Header, Footer } from "@/components/Elements"
-import { SelectCharacter } from "@/components/Game"
+import { Wrapper, Header, Footer, Button } from "@/components/Elements"
+import { SelectCharacter, Arena } from "@/components/Game"
 
 import dragoniteSrc from "@/assets/dragonite.gif"
 
-import MyEpicGame from "@/solidity/MyEpicGame.json"
-
-import { CONTRACT_ADDRESS, transformCharacterAttributes } from "@/solidity/constants"
+import getGameContract from "@/solidity/getGameContract"
+import { transformCharacterAttributes } from "@/solidity/constants"
 import { ethers } from "ethers"
 
 const App = () => {
@@ -63,15 +62,9 @@ const App = () => {
     const fetchNFTMetadata = async () => {
         console.log("Checking for character NFT on address:", account)
 
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const signer = provider.getSigner()
-        const gameContract = new ethers.Contract(
-            CONTRACT_ADDRESS,
-            MyEpicGame.abi,
-            signer
-        )
-
+        const gameContract = getGameContract()
         const txn = await gameContract.userHasNFT()
+
         if (txn.name) {
             console.log("User has character NFT")
             setCharacterNFT(transformCharacterAttributes(txn))
@@ -80,9 +73,7 @@ const App = () => {
         }
     }
 
-    useEffect(() => {
-        hasWallet(setAccount)
-    }, [])
+    useEffect(() => hasWallet(setAccount), [])
 
     useEffect(() => {
         if(account) {
@@ -90,29 +81,31 @@ const App = () => {
         }
     }, [ account ])
 
-    if(!account) {
-        return (
-            <Wrapper>
-                <Header />
+    const render = () => {
+        if(!account) {
+            return (
+                <>
+                    <img className="max-w-full rounded-xl mt-6" src={ dragoniteSrc } />
 
-                <img className="max-w-full rounded-xl mt-6" src={ dragoniteSrc } />
-
-                <div className="text-center">
-                    <button onClick={ connectWallet } className="px-3 py-2 rounded-lg mt-6 bg-blue-500 text-white">Connect with Metamask</button>
-                </div>
-
-                <Footer />
-            </Wrapper>
-        )
-    } else if(account && !characterNFT) {
-        return (
-            <Wrapper>
-                <Header />
-                <SelectCharacter setCharacterNFT={ setCharacterNFT }/>
-                <Footer />
-            </Wrapper>
-        )
+                    <div className="text-center">
+                        <Button onClick={ connectWallet } className="mt-6">Connect with Metamask</Button>
+                    </div>
+                </>
+            )
+        } else if(account && !characterNFT) {
+            return <SelectCharacter setCharacterNFT={ setCharacterNFT }/>
+        } else {
+            return <Arena characterNFT={ characterNFT }/>
+        }
     }
+    
+    return (
+        <Wrapper>
+            <Header />
+            { render() }
+            <Footer />
+        </Wrapper>
+    )
 }
 
 export default App
